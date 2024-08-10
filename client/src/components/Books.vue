@@ -5,14 +5,7 @@
         <h1>Books</h1>
         <hr />
         <br /><br />
-        <alert :message="message" v-if="showMessage">
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
-          ></button>
-        </alert>
+        <alert :message="message" v-if="showMessage"> </alert>
 
         <button
           type="button"
