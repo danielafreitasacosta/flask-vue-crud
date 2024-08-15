@@ -37,7 +37,7 @@ def all_books():
 #New route handler 
 @app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
 def single_book(book_id): 
-    response_object = { 'status', 'success'}
+    response_object = { 'status': 'success'}
     if request.method == 'PUT':
         post_data = request.get_json()
         remove_book(book_id)
@@ -48,17 +48,11 @@ def single_book(book_id):
             'read' : post_data.get('read')
         })
         response_object['message'] = 'Book updated!'
-    
-        if request.method == 'DELETE':
-            remove_book(book_id)
-            response_object['message'] = 'Book removed!'
-
-        #Convert any sets into lists 
-        for key, value in response_object.items(): 
-            if isinstance(value, set): 
-                response_object[key] = list(value)
-                
+    if request.method == 'DELETE':
+        remove_book(book_id)
+        response_object['message'] = 'Book removed!'
     return jsonify(response_object)
+
 
 def remove_book(book_id): 
     for book in BOOKS: 

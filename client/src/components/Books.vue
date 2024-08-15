@@ -57,8 +57,7 @@
     </div>
   </div>
 
-  <!-- add book modal -->
-
+  <!-- add new book modal -->
   <div
     ref="addBookModal"
     class="modal fade"
@@ -80,7 +79,6 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-
         <div class="modal-body">
           <form>
             <div class="mb-3">
@@ -208,8 +206,8 @@
         </div>
       </div>
     </div>
+    <div v-if="activeAddBookModal" class="modal-backdrop fade show"></div>
   </div>
-  <div v-if="activeAddBookModal" class="modal-backdrop fade show"></div>
 </template>
 
 <script>
@@ -254,6 +252,22 @@ export default {
           this.getBooks();
         });
     },
+    getBooks() {
+      const path = "http://localhost:5001/books";
+      axios
+        .get(path)
+        .then((res) => {
+          this.books = res.data.books;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    handleAddReset() {
+      this.initForm();
+    },
+
     updateBook(payload, bookID) {
       const path = `http://localhost:5001/books/${bookID}`;
       axios
@@ -268,20 +282,7 @@ export default {
           this.getBooks();
         });
     },
-    getBooks() {
-      const path = "http://localhost:5001/books";
-      axios
-        .get(path)
-        .then((res) => {
-          this.books = res.data.books;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
-    handleAddReset() {
-      this.initForm();
-    },
+
     handleAddSubmit() {
       this.toggleAddBookModal();
       let read = false;
@@ -291,7 +292,7 @@ export default {
       const payload = {
         title: this.addBookForm.title,
         author: this.addBookForm.author,
-        read: this.addBookForm.read, //property shorthand
+        read, //property shorthand
       };
       this.addBook(payload);
       this.initForm();
