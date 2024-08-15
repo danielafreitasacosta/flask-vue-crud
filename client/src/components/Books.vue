@@ -41,7 +41,11 @@
                   >
                     Update
                   </button>
-                  <button type="button" class="btn btn-danger btn-sm">
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    @click="handleDeleteBook(book)"
+                  >
                     Delete
                   </button>
                 </div>
@@ -157,7 +161,7 @@
             <div class="mb-3">
               <label for="editBookTitle" class="form-label">Title:</label>
               <input
-                type="checkbox"
+                type="text"
                 class="form-control"
                 id="editBookTitle"
                 v-model="editBookForm.title"
@@ -287,7 +291,7 @@ export default {
       const payload = {
         title: this.addBookForm.title,
         author: this.addBookForm.author,
-        read, //property shorthand
+        read: this.addBookForm.read, //property shorthand
       };
       this.addBook(payload);
       this.initForm();
@@ -295,11 +299,11 @@ export default {
     initForm() {
       this.addBookForm.title = "";
       this.addBookForm.author = "";
-      this.addBookForm.read = [];
+      this.addBookForm.read = false;
       this.editBookForm.id = "";
       this.editBookForm.title = "";
       this.editBookForm.author = "";
-      this.editBookForm.read = [];
+      this.editBookForm.read = false;
     },
     handleEditSubmit() {
       this.toggleEditBookModal(null);
@@ -308,7 +312,7 @@ export default {
       const payload = {
         title: this.editBookForm.title,
         author: this.editBookForm.author,
-        read,
+        read: this.editBookForm.read,
       };
       this.updateBook(payload, this.editBookForm.id);
     },
@@ -316,6 +320,23 @@ export default {
       this.toggleEditBookModal(null);
       this.initForm();
       this.getBooks(); //why?
+    },
+    handleDeleteBook(book) {
+      this.removeBook(book.id);
+    },
+    removeBook(bookID) {
+      const path = `http://localhost:5001/books/${bookID}`;
+      axios
+        .delete(path)
+        .then(() => {
+          this.getBooks();
+          this.message = "Book Removed!";
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          console.error(error);
+          this.getBooks();
+        });
     },
     toggleAddBookModal() {
       const body = document.querySelector("body");
